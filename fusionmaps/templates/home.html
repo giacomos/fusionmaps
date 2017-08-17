@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <script
+      src="https://code.jquery.com/jquery-2.2.4.min.js"
+      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+      crossorigin="anonymous"></script>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 50%;
+      }
+      a {
+        text-decoration: none;
+      }
+      a:hover{
+        text-decoration: underline;
+      }
+      .visited:after{
+        content: '✓';
+        display: inline;
+        margin-left: 0.5em;
+        color: #00FF00;
+      }
+      .clear-addresses:before{
+        content: '🗑';
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script>
+      var map;
+      var markers = [];
+      function initMap() {
+        var initialCenter = {lat: 0, lng: 0};
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: initialCenter,
+          zoom: 3
+        });
+
+        window.geocoder = new google.maps.Geocoder();
+      }
+
+      function handler(response){
+        debugger;
+      }
+
+      function addMarker(location, title) {
+
+        var marker = new google.maps.Marker({
+          position: location,
+          map: map,
+          title: title
+        });
+        markers.push(marker);
+      }
+
+      // Sets the map on all markers in the array.
+      function setMapOnAll(map) {
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(map);
+        }
+      }
+
+      // Removes the markers from the map, but keeps them in the array.
+      function clearMarkers() {
+        setMapOnAll(null);
+      }
+      // Shows any markers currently in the array.
+      function showMarkers() {
+        setMapOnAll(map);
+      }
+      // Deletes all markers in the array by removing references to them.
+      function deleteMarkers() {
+        clearMarkers();
+        markers = [];
+      }
+
+      (function($){
+        function codeAddress(address) {
+
+            //In this case it gets the address from an element on the page, but obviously you  could just pass it to the method instead
+            geocoder.geocode( { 'address' : address }, function( results, status ) {
+                if( status == google.maps.GeocoderStatus.OK ) {
+                    if ( results.length < 1 ) {
+                      console.log('NO RESULT FOUND');
+                      return;
+                    }
+                    var location_type = results[0].geometry.location_type;
+                    if ( location_type !== "ROOFTOP" && location_type !== "GEOMETRIC_CENTER"){
+                      alert('Not a valid address');
+                      return;
+                    }
+
+                    var location = results[0].geometry.location;
+                    var address = results[0].formatted_address
+                    $.ajax({
+                      dataType: "json",
+                      url: 'addresses/create',
+                      data: {
+                        'lat': location.lat(),
+                        'lng': location.lng(),
+                        'address': address
+                      },
+                      success: function (data) {
+                        //In this case it creates a marker, but you can get the lat and lng from the location.LatLng
+                        if (data.result === 'ok'){
+                          map.setCenter( location );
+                          addMarker( location, address);
+                          $('.visited-addresses').append('<li><span>'+ address + '</span></li>');
+                        } else {
+                          alert(data.result);
+                        }
+
+                      }
+                    });
+                } else {
+                    alert( 'Geocode was not successful for the following reason: ' + status );
+                }
+            } );
+        }
+
+        $(document).ready(function(){
+          $('.addresses').on('click', 'a', function(ev){
+            ev.preventDefault();
+            var link = $(this);
+            codeAddress(link.text());
+          });
+          $('.clear-addresses').on('click', function(ev){
+            ev.preventDefault();
+            deleteMarkers();
+            $.ajax({
+              dataType: "json",
+              url: 'addresses/remove_all',
+              success: function (data){
+                $('.visited-addresses').empty();
+              },
+            });
+          });
+        });
+      })(jQuery);
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5Rex1K8_TvxommoBvhmepgbobDiYhRQo&callback=initMap"
+    async defer></script>
+    <script src="https://www.googleapis.com/fusiontables/v2/tables/1y-Bd4HBI24hMMoggv1R-1HYguga8Acq1zHVO_mwY/templates?callback=handler&key=AIzaSyD5Rex1K8_TvxommoBvhmepgbobDiYhRQo"></script>
+  </head>
+  <body>
+    <a href="{% url 'index' %}">Home</a>.
+    <div id="map"></div>
+
+
+    <h1>Visit a new addresses</h1>
+    <p>click on an address below to add it to the map:</p>
+    <ul class="addresses">
+      <li><a href="#">Via 21 Aprile 1945, 40019 Sant'Agata Bolognese BO, Italy</a></li>
+      <li><a href="#">Garda Lake</a></li>
+      <li><a href="#">Josefstrasse 225, 8005 Zürich, Switzerland</a></li>
+      <li><a href="#">Google Bldg 42, 1600 Amphitheatre Pkwy, Mountain View, CA 94043, USA</a></li>
+    </ul>
+
+    <h1>Visited addresses</h1>
+    <ul class="visited-addresses">
+      {% for addr in addresses %}
+        <li><span>{{ addr.address }}</span></li>
+      {% endfor %}
+    </ul>
+
+    <a href="#" class="clear-addresses">Remove all markers</a>
+  </body>
+</html>
