@@ -27,7 +27,7 @@ def add_address(request):
             data = {'result': 'address already added'}
             return JsonResponse(data)
         # TODO: check for remote errors
-        fw.add_address(address, lat, lng)
+        fw.add_address(address.replace("'", "\\'"), lat, lng)
         location.save()
     data = {'result': 'ok'}
     return JsonResponse(data)

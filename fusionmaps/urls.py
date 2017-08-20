@@ -4,7 +4,6 @@ from . import views
 
 
 urlpatterns = [
-    # url(r'^$', views.HomeView.as_view(), name='index'),
     url(r'^$', views.index, name='index'),
     url(r'^addresses/create$', views.add_address, name='add_address'),
     url(

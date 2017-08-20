@@ -13,3 +13,8 @@ class GeoLocation(models.Model):
         if (self.lat == other.lat and self.lng == other.lng):
             return True
         return False
+
+    @classmethod
+    def create(cls, lat, lng, address):
+        location = cls(lat=lat, lng=lng, address=address)
+        return location

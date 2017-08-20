@@ -42,6 +42,7 @@ class FusionWrapper(object):
             address=address,
             location=','.join([lat, lng])
         )
+        print(sql)
         q.sql(sql=sql).execute()
 
     def remove_all_addresses(self):

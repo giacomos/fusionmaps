@@ -76,7 +76,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# GOOGLE_API_KEY = 'AIzaSyD5Rex1K8_TvxommoBvhmepgbobDiYhRQo'
 GOOGLE_API_KEY = 'AIzaSyCR2oXrmBH5KHm6bNRDklRKLng2NQL0TEs'
 
 GOOGLE_SERVICE_ACCOUNT_CREDENTIALS_JSON = os.path.join(

@@ -16,12 +16,23 @@
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
     <script>
       var GOOGLE_API_KEY = '{{ GOOGLE_API_KEY }}';
+      var initial_markers = [
+        {% for addr in addresses %}
+          {
+            'location':
+              {'lat': {{ addr.lat}},
+              'lng': {{ addr.lng }}},
+            'title': '{{ addr.address }}'
+          },
+        {% endfor %}
+      ];
     </script>
     <script type="text/javascript" src="{% static 'app.js' %}"></script>
     <script  async defer src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_API_KEY }}&callback=initMap"></script>
     <script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
+    <script type="text/javascript" src="http://spin.js.org/spin.min.js"></script>
+    <script type="text/javascript" src="http://spin.js.org/jquery.spin.js"></script>
 
-    <!-- <script src="https://www.googleapis.com/fusiontables/v2/tables/1y-Bd4HBI24hMMoggv1R-1HYguga8Acq1zHVO_mwY/templates?callback=handler&key=AIzaSyD5Rex1K8_TvxommoBvhmepgbobDiYhRQo"></script> -->
   </head>
   <body>
     <a href="{% url 'index' %}">Home</a>.
@@ -40,10 +51,11 @@
     <h1>Visited addresses</h1>
     <ul class="visited-addresses">
       {% for addr in addresses %}
-        <li><span>{{ addr.address }}</span></li>
+        <li><span data-lat="{{ addr.lat}}" data-lng="{{ add.lng }}">{{ addr.address }}</span></li>
       {% endfor %}
     </ul>
 
     <a href="#" class="clear-addresses">Remove all markers</a>
+    <div class="spinner"></div>
   </body>
 </html>

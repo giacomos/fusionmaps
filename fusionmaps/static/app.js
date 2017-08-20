@@ -1,23 +1,24 @@
-/* global jQuery, google */
+/* global jQuery, google, initial_markers */
 'use strict';
 
 var map;
 var markers = [];
+
 function initMap() {
-  var initialCenter = {lat: 0, lng: 0};
+  var initialCenter = {lat: 44.4833333, lng: 11.3333333};
   map = new google.maps.Map(document.getElementById('map'), {
     center: initialCenter,
     zoom: 3
   });
 
   window.geocoder = new google.maps.Geocoder();
-}
-
-function handler(response){
+  initial_markers.forEach(function(marker){
+    addMarker(marker.location, marker.title);
+  });
+  showMarkers();
 }
 
 function addMarker(location, title) {
-
   var marker = new google.maps.Marker({
     position: location,
     map: map,
@@ -47,32 +48,19 @@ function deleteMarkers() {
   markers = [];
 }
 
-function auth() {
-  var config = {
-    'client_id': '68093915267.apps.googleusercontent.com',
-    'scope': 'https://www.googleapis.com/auth/fusiontables',
-    'immediate': false
-  };
-  debugger;
-  gapi.auth.authorize(config, function () {
-    console.log('login complete');
-    console.log(gapi.auth.getToken());
-  });
-}
-
 (function($){
   function codeAddress(address) {
-
-      //In this case it gets the address from an element on the page, but obviously you  could just pass it to the method instead
+    $('.spinner').spin();
     window.geocoder.geocode( { 'address' : address }, function( results, status ) {
       if( status === google.maps.GeocoderStatus.OK ) {
         if ( results.length < 1 ) {
-          console.log('NO RESULT FOUND');
+          $('.spinner').spin(false);
           return;
         }
         var location_type = results[0].geometry.location_type;
         if ( location_type !== 'ROOFTOP' && location_type !== 'GEOMETRIC_CENTER'){
           alert('Not a valid address');
+          $('.spinner').spin(false);
           return;
         }
 
@@ -87,15 +75,14 @@ function auth() {
             'address': address
           },
           success: function (data) {
-            //In this case it creates a marker, but you can get the lat and lng from the location.LatLng
             if (data.result === 'ok'){
               map.setCenter( location );
               addMarker( location, address);
               $('.visited-addresses').append('<li><span>'+ address + '</span></li>');
+              $('.spinner').spin(false);
             } else {
               alert(data.result);
             }
-
           }
         });
       } else {
@@ -113,13 +100,14 @@ function auth() {
     });
     $('.clear-addresses').on('click', function(ev){
       ev.preventDefault();
+      $('.spinner').spin();
       deleteMarkers();
       $.ajax({
         dataType: 'json',
         url: 'addresses/remove_all',
         success: function (){
           $('.visited-addresses').empty();
-          alert('All addresses have been removed');
+          $('.spinner').spin(false);
         }
       });
     });
