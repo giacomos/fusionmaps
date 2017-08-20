@@ -1,6 +1,4 @@
 from django.http import JsonResponse
-from django.http import HttpResponseBadRequest
-
 from django.conf import settings
 from django.shortcuts import render
 from .models import GeoLocation
@@ -24,18 +22,22 @@ def add_address(request):
         location = GeoLocation.create(lat, lng, address)
         addresses = GeoLocation.objects.all()
         fusion_exists = fw.address_exist(lat, lng)
+        # No duplicated allowed, neither locally nor remotely
         if (location in addresses or fusion_exists):
             data = {'result': 'address already added'}
             return JsonResponse(data)
+        # TODO: check for remote errors
         fw.add_address(address, lat, lng)
         location.save()
-        print('Adding new address: %s %s %s' % (lat, lng, address))
     data = {'result': 'ok'}
     return JsonResponse(data)
 
 
 def remove_all_addresses(request):
+    # Remove local addresses
     GeoLocation.objects.all().delete()
+    # Remove remote addresses
     fw.remove_all_addresses()
+    # TODO: check for remove errors
     data = {'result': 'ok'}
     return JsonResponse(data)
