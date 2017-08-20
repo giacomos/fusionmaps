@@ -106,14 +106,6 @@ function auth() {
 
 
   $(document).ready(function(){
-    // auth();
-    // $.ajax({
-    //   url: 'https://www.googleapis.com/fusiontables/v2/tables?callback=handler&key=' + GOOGLE_API_KEY,
-    //   data: {},
-    //   success: function(data){
-    //     debugger;
-    //   }
-    // });
     $('.addresses').on('click', 'a', function(ev){
       ev.preventDefault();
       var link = $(this);
@@ -127,6 +119,7 @@ function auth() {
         url: 'addresses/remove_all',
         success: function (){
           $('.visited-addresses').empty();
+          alert('All addresses have been removed');
         }
       });
     });

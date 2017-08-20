@@ -18,18 +18,18 @@ from django.conf.urls import url
 from django.conf.urls import include
 from django.contrib import admin
 
-import oauth2client.contrib.django_util.site as django_util_site
+# import oauth2client.contrib.django_util.site as django_util_site
 
 
 urlpatterns = [
     url(r'^fusionmaps/', include('fusionmaps.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^oauth2/', include(django_util_site.urls)),
-    url(r'^oauth2callback', 'fusionmaps.views.auth_return'),
-    url(
-        r'^accounts/login/$',
-        'django.contrib.auth.views.login',
-        {'template_name': 'login.html'}
-    ),
+    # url(r'^oauth2/', include(django_util_site.urls)),
+    # url(r'^oauth2callback', 'fusionmaps.views.auth_return'),
+    # url(
+    #     r'^accounts/login/$',
+    #     'django.contrib.auth.views.login',
+    #     {'template_name': 'login.html'}
+    # ),
     # url(r'^login/$', 'django.contrib.auth.views.login', name="my_login")
 ]
