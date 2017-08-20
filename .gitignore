@@ -4,3 +4,4 @@ __pycache__/
 # Django stuff:
 *.log
 *.pot
+db.sqlite3
