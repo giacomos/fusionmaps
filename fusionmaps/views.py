@@ -6,6 +6,7 @@ from . import fw
 
 
 def index(request):
+    """ View for the home of the project """
     addresses = GeoLocation.objects.all()
     context = {
         'addresses': addresses,
@@ -15,6 +16,8 @@ def index(request):
 
 
 def add_address(request):
+    """ Json view that add a new address both on local db and on a fusion table
+    """
     lat = request.GET.get('lat', None)
     lng = request.GET.get('lng', None)
     address = request.GET.get('address', None)
@@ -34,6 +37,8 @@ def add_address(request):
 
 
 def remove_all_addresses(request):
+    """ Json view that wipes all the addresses both locally and remotely
+    """
     # Remove local addresses
     GeoLocation.objects.all().delete()
     # Remove remote addresses

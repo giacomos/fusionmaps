@@ -4,6 +4,9 @@
 var map;
 var markers = [];
 
+/*
+* Callback function that initialize the google maps with our initial markers
+*/
 function initMap() {
   var initialCenter = {lat: 44.4833333, lng: 11.3333333};
   map = new google.maps.Map(document.getElementById('map'), {
