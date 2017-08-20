@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <script
+      src="https://code.jquery.com/jquery-2.2.4.min.js"
+      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+      crossorigin="anonymous"></script>
+    <title>Simple Map</title>
+
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.png' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <script>
+      var GOOGLE_API_KEY = '{{ GOOGLE_API_KEY }}';
+    </script>
+    <script type="text/javascript" src="{% static 'app.js' %}"></script>
+    <script  async defer src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_API_KEY }}&callback=initMap"></script>
+    <script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
+
+    <!-- <script src="https://www.googleapis.com/fusiontables/v2/tables/1y-Bd4HBI24hMMoggv1R-1HYguga8Acq1zHVO_mwY/templates?callback=handler&key=AIzaSyD5Rex1K8_TvxommoBvhmepgbobDiYhRQo"></script> -->
+  </head>
+  <body>
+    <a href="{% url 'index' %}">Home</a>.
+    <div id="map"></div>
+
+
+    <h1>Visit a new addresses</h1>
+    <p>click on an address below to add it to the map:</p>
+    <ul class="addresses">
+      <li><a href="#">Via 21 Aprile 1945, 40019 Sant'Agata Bolognese BO, Italy</a></li>
+      <li><a href="#">Garda Lake</a></li>
+      <li><a href="#">Josefstrasse 225, 8005 Zürich, Switzerland</a></li>
+      <li><a href="#">Google Bldg 42, 1600 Amphitheatre Pkwy, Mountain View, CA 94043, USA</a></li>
+    </ul>
+
+    <h1>Visited addresses</h1>
+    <ul class="visited-addresses">
+      {% for addr in addresses %}
+        <li><span>{{ addr.address }}</span></li>
+      {% endfor %}
+    </ul>
+
+    <a href="#" class="clear-addresses">Remove all markers</a>
+  </body>
+</html>
