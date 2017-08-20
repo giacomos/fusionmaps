@@ -8,8 +8,8 @@ save the new location both on django and on a google fusion table.
 ## Setup
 
 To start using this, you first need to:
-1. edit the `settings.py` file to setup your google maps api key.
-2. create a service account for the google api dashboard:
+1. edit the `settings.py` file to setup your **google maps api key**.
+2. create a new **google api service account** for the api dashboard:
 <https://console.developers.google.com/apis/credentials/serviceaccountkey> and place the downloaded json file in the root folder of this
 project, in a file named `client_secrets.json`
 3. create a new fusion table <https://fusiontables.google.com> and share it with the newly created service account.
